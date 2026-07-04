@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  
+  --color-brand-primary: #ea580c; /* Vibrant Orange */
+  --color-brand-secondary: #fef3c7; /* Warm Soft Gold */
+
+  /* Override standard Rose palette to map to the Vibrant Orange theme */
+  --color-rose-50: #fff7ed; /* orange-50 */
+  --color-rose-100: #ffedd5; /* orange-100 */
+  --color-rose-200: #fed7aa; /* orange-200 */
+  --color-rose-300: #fdba74; /* orange-300 */
+  --color-rose-400: #fb923c; /* orange-400 */
+  --color-rose-500: #f97316; /* orange-500 */
+  --color-rose-600: #ea580c; /* orange-600 */
+  --color-rose-700: #c2410c; /* orange-700 */
+  --color-rose-800: #9a3412; /* orange-800 */
+  --color-rose-900: #ea580c; /* orange-600 */
+  --color-rose-950: #0f172a; /* Slate 900 for dark accents/buttons */
+
+  /* Override standard Amber palette for rich accents */
+  --color-amber-50: #fffbeb; /* amber-50 */
+  --color-amber-100: #fef3c7; /* amber-100 */
+  --color-amber-200: #fde68a; /* amber-200 */
+  --color-amber-300: #fcd34d; /* amber-300 */
+  --color-amber-400: #fbbf24; /* amber-400 */
+  --color-amber-500: #f59e0b; /* amber-500 */
+  --color-amber-600: #d97706; /* amber-600 */
+  --color-amber-700: #b45309; /* amber-700 */
+  --color-amber-800: #c2410c; /* orange-700 for high-contrast text */
+  --color-amber-900: #7c2d12; /* amber-900 */
+  --color-amber-950: #451a03; /* amber-950 */
+}
+
+/* Custom scrollbars for a polished experience */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.markdown-body {
+  font-family: var(--font-sans);
+}
+
