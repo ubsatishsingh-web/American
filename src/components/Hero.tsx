@@ -100,47 +100,63 @@ export default function Hero({ businessInfo, lang }: HeroProps) {
 
           </div>
 
-          {/* Decorative Stat Cards Column */}
+          {/* Decorative Brand Image & Stats Column */}
           <div className="lg:col-span-5 relative mt-6 lg:mt-0">
-            <div className="relative mx-auto max-w-sm">
+            <div className="relative mx-auto max-w-sm sm:max-w-md">
               
-              {/* Outer Glow Decoration */}
-              <div className="absolute inset-0 bg-rose-900/5 rounded-3xl transform rotate-3 scale-102 -z-10" />
+              {/* Outer Decorative Glows */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-amber-400 to-rose-600 rounded-3xl transform rotate-3 scale-102 opacity-20 blur-xl -z-10" />
+              <div className="absolute inset-0 bg-rose-900/5 rounded-3xl transform -rotate-2 scale-101 -z-10" />
               
-              {/* Main Visual Card */}
-              <div className="bg-white border-2 border-rose-900/10 rounded-2xl shadow-xl p-6 sm:p-8 space-y-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-rose-900/5 rounded-full -mr-8 -mt-8" />
+              {/* Main Visual Container */}
+              <div className="bg-white border border-rose-900/10 rounded-3xl shadow-xl p-4 sm:p-5 relative overflow-hidden flex flex-col gap-5">
                 
-                <h3 className="font-display font-bold text-lg text-rose-900 border-b border-rose-50 pb-3 flex items-center">
-                  <Sparkles className="w-4 h-4 text-amber-500 mr-2" />
-                  {lang === "en" ? "Why Purnia trusts Shamim Sir:" : "पूर्णिया शमीम सर पर भरोसा क्यों करता है:"}
-                </h3>
+                {/* Brand Photo Container */}
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-stone-100 to-stone-200 aspect-[4/5] sm:aspect-square md:aspect-[4/5] shadow-inner">
+                  {/* Shamim Sir's Portrait */}
+                  <img 
+                    src="https://lh3.googleusercontent.com/d/10lMTLpXGEyZ-m7yB28O1NDoSI8xT4e0-" 
+                    alt="Shamim Sir - Founder of American Spoken English" 
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover object-top hover:scale-103 transition-transform duration-500"
+                  />
+                  
+                  {/* Elegant Glassmorphic Label Overlay */}
+                  <div className="absolute bottom-4 left-4 right-4 backdrop-blur-md bg-slate-950/80 text-white p-3 rounded-xl border border-white/10 shadow-lg">
+                    <p className="font-display font-black text-sm tracking-wide text-amber-400 uppercase">
+                      {lang === "en" ? "Shamim Sir" : "शमीम सर"}
+                    </p>
+                    <p className="text-[10px] sm:text-xs text-slate-300 font-medium">
+                      {lang === "en" ? "Founder & Chief Mentor" : "संस्थापक एवं मुख्य मार्गदर्शक"}
+                    </p>
+                  </div>
 
-                {/* Stats rows */}
-                <div className="space-y-4">
-                  {stats.map((stat, i) => (
-                    <div key={i} className="flex items-center space-x-4 p-3 bg-rose-50/50 rounded-xl border border-rose-100/50">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-rose-900 text-white flex items-center justify-center font-bold text-sm">
-                        {i + 1}
-                      </div>
-                      <div>
-                        <p className="font-sans font-bold text-slate-800 text-sm sm:text-base leading-none">
-                          {stat.label}
-                        </p>
-                        <p className="font-sans text-xs text-slate-500 mt-1">
-                          {stat.detail}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                  {/* Trust Badge overlay */}
+                  <span className="absolute top-4 right-4 px-3 py-1 bg-amber-500/95 text-slate-950 text-[10px] font-black rounded-lg uppercase tracking-wider shadow-md backdrop-blur-xs border border-amber-400/30">
+                    ⭐ {lang === "en" ? "10+ Years Legacy" : "10+ वर्षों का अनुभव"}
+                  </span>
                 </div>
 
-                {/* Local Quote Accent */}
-                <div className="text-center italic text-xs text-amber-900 bg-amber-50 rounded-lg p-3 border border-amber-100">
+                {/* Local Quote / Philosophy Accent */}
+                <div className="text-center italic text-[11px] sm:text-xs text-amber-900 bg-amber-50/70 rounded-xl p-3 border border-amber-100/50">
                   {lang === "en" 
                     ? "“Our goal is simple: no student from Seemanchal should lose job opportunities because of poor English.”"
                     : "“हमारा लक्ष्य स्पष्ट है: अंग्रेजी के अभाव में सीमांचल का कोई भी बच्चा अवसरों से वंचित न रहे।”"
                   }
+                </div>
+
+                {/* Premium Mini-Stats Grid */}
+                <div className="grid grid-cols-3 gap-2.5 pt-1 border-t border-slate-100">
+                  {stats.map((stat, i) => (
+                    <div key={i} className="text-center p-2 bg-stone-50 rounded-xl border border-stone-100 flex flex-col justify-center items-center">
+                      <p className="font-display font-extrabold text-slate-900 text-[10px] sm:text-xs leading-tight text-center">
+                        {stat.label}
+                      </p>
+                      <p className="text-[9px] text-slate-500 mt-0.5 font-medium">
+                        {stat.detail}
+                      </p>
+                    </div>
+                  ))}
                 </div>
 
               </div>

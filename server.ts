@@ -48,14 +48,134 @@ function parseSheetTab(jsonText: string): any[] {
   }
 }
 
+// YouTube Scraper to automatically get latest videos
+async function scrapeYouTubeChannel(): Promise<any[]> {
+  try {
+    const channelUrl = "https://www.youtube.com/@americanbyshamimsir/videos";
+    console.log(`Automatically capturing preview of top videos from YouTube channel: ${channelUrl}`);
+    
+    const res = await fetch(channelUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Cache-Control": "no-cache",
+        "Pragma": "no-cache"
+      }
+    });
+
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const text = await res.text();
+    const videos: any[] = [];
+
+    // Approach 1: Parse ytInitialData structurally
+    try {
+      const match = text.match(/ytInitialData\s*=\s*({.+?});\s*<\/script>/) || text.match(/var ytInitialData\s*=\s*({.+?});/);
+      if (match) {
+        const data = JSON.parse(match[1]);
+        const tabs = data.contents?.twoColumnBrowseResultsRenderer?.tabs || [];
+        let contents: any[] = [];
+        for (const tab of tabs) {
+          const richGrid = tab.tabRenderer?.content?.richGridRenderer;
+          if (richGrid?.contents) {
+            contents = richGrid.contents;
+            break;
+          }
+        }
+
+        for (const item of contents) {
+          const videoRenderer = item.richItemRenderer?.content?.videoRenderer;
+          if (videoRenderer) {
+            const videoId = videoRenderer.videoId;
+            if (videoId) {
+              const title = videoRenderer.title?.runs?.[0]?.text || videoRenderer.title?.accessibility?.accessibilityData?.label || "Video Lesson";
+              const descSnippet = videoRenderer.descriptionSnippet?.runs?.[0]?.text || "";
+              const viewCount = videoRenderer.viewCountText?.simpleText || "";
+              const publishTime = videoRenderer.publishedTimeText?.simpleText || "";
+              
+              videos.push({
+                video_url: `https://www.youtube.com/watch?v=${videoId}`,
+                title: title,
+                description: descSnippet ? `${descSnippet} (${publishTime} • ${viewCount})` : `Free English Class — watch this lesson on YouTube (${publishTime} • ${viewCount})`,
+                featured: videos.length === 0 ? "yes" : "no",
+              });
+            }
+          }
+        }
+      }
+    } catch (parseErr) {
+      console.warn("Structural JSON parse failed or changed, moving to regex fallback", parseErr);
+    }
+
+    // Approach 2: Robust Regex fallback to find video IDs and Titles
+    if (videos.length === 0) {
+      console.log("JSON parsing empty, trying robust regex matching...");
+      const idMatches = [...text.matchAll(/"videoId"\s*:\s*"([a-zA-Z0-9_-]{11})"/g)];
+      const uniqueIds = Array.from(new Set(idMatches.map(m => m[1])));
+
+      if (uniqueIds.length > 0) {
+        console.log(`Found ${uniqueIds.length} video IDs using regex backup.`);
+        const topIds = uniqueIds.slice(0, 6);
+
+        for (let i = 0; i < topIds.length; i++) {
+          const vidId = topIds[i];
+          let videoTitle = "";
+          
+          const index = text.indexOf(`"videoId":"${vidId}"`);
+          if (index !== -1) {
+            const chunk = text.substring(Math.max(0, index - 1000), index + 3000);
+            const titleMatch = chunk.match(/"title"\s*:\s*{\s*"runs"\s*:\s*\[\s*{\s*"text"\s*:\s*"([^"]+)"/);
+            if (titleMatch && titleMatch[1]) {
+              videoTitle = titleMatch[1];
+            } else {
+              const labelMatch = chunk.match(/"title"\s*:\s*{\s*"accessibility"\s*:\s*{\s*"accessibilityData"\s*:\s*{\s*"label"\s*:\s*"([^"]+)"/);
+              if (labelMatch && labelMatch[1]) {
+                videoTitle = labelMatch[1].split(" by ")[0];
+              }
+            }
+          }
+
+          if (!videoTitle) {
+            const knownFallback = fallbackData.videos.find(fv => fv.video_url.includes(vidId));
+            videoTitle = knownFallback?.title || `English & Personality Development Masterclass #${i + 1}`;
+          }
+
+          // Decode simple unicode escape sequences
+          try {
+            videoTitle = videoTitle.replace(/\\u([0-9a-fA-F]{4})/g, (_, grp) => String.fromCharCode(parseInt(grp, 16)));
+          } catch (_) {}
+
+          videos.push({
+            video_url: `https://www.youtube.com/watch?v=${vidId}`,
+            title: videoTitle,
+            description: "Free high-impact lesson on spoken English, grammar drills, stage confidence, and public speaking direct from our classroom.",
+            featured: i === 0 ? "yes" : "no",
+          });
+        }
+      }
+    }
+
+    return videos;
+  } catch (error) {
+    console.error("Error in scrapeYouTubeChannel:", error);
+    return [];
+  }
+}
+
 // Get live sheet data
 async function getLiveSheetData(): Promise<SheetData> {
+  // First, check if we can scrape YouTube dynamically
+  const scrapedVideos = await scrapeYouTubeChannel();
+
   const sheetUrl = process.env.GOOGLE_SHEET_URL || "";
   const sheetId = extractSheetId(sheetUrl);
   
   if (!sheetId) {
-    console.log("No valid GOOGLE_SHEET_URL found in .env. Using fallback local data.");
-    return fallbackData;
+    console.log("No valid GOOGLE_SHEET_URL found in .env. Using fallback local data with scraped/latest YouTube videos.");
+    const data: SheetData = { ...fallbackData };
+    if (scrapedVideos.length > 0) {
+      data.videos = scrapedVideos;
+    }
+    return data;
   }
 
   try {
@@ -160,8 +280,10 @@ async function getLiveSheetData(): Promise<SheetData> {
       })).filter((f) => f.question && f.answer);
     }
 
-    // 6. Process Videos
-    if (results["Videos"] && results["Videos"].length > 0) {
+    // 6. Process Videos - Prioritize automatically scraped videos from YouTube channel
+    if (scrapedVideos && scrapedVideos.length > 0) {
+      data.videos = scrapedVideos;
+    } else if (results["Videos"] && results["Videos"].length > 0) {
       data.videos = results["Videos"].map((row: any) => ({
         video_url: row.video_url || row.url || "",
         title: row.title || "",

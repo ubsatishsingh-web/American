@@ -63,14 +63,32 @@ export default function About({ businessInfo, lang }: AboutProps) {
               {lang === "en" ? businessInfo.about_story : businessInfo.about_story_hindi}
             </p>
 
-            <div className="p-4 bg-rose-50/50 rounded-xl border border-rose-100 flex items-start space-x-3">
-              <Sparkles className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-              <p className="text-xs sm:text-sm text-rose-950 font-medium">
-                {lang === "en" 
-                  ? "At American, we believe fluency in English is not a measure of intelligence, but a powerful skill that unlocks global opportunities. Our doors are open for everyone."
-                  : "अमेरिकन अकादमी में हमारा मानना है कि अंग्रेजी में प्रवाह बुद्धिमत्ता की माप नहीं है, बल्कि एक शक्तिशाली कौशल है जो वैश्विक अवसरों को खोलता है।"
-                }
-              </p>
+            <div className="p-5 bg-gradient-to-r from-rose-50 to-amber-50/40 rounded-2xl border border-rose-100/80 shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-4">
+              <div className="relative shrink-0">
+                <div className="absolute inset-0 bg-amber-400 rounded-full blur-xs opacity-40" />
+                <img 
+                  src="https://lh3.googleusercontent.com/d/10lMTLpXGEyZ-m7yB28O1NDoSI8xT4e0-" 
+                  alt="Shamim Sir" 
+                  referrerPolicy="no-referrer"
+                  className="w-16 h-16 rounded-full object-cover object-top border-2 border-white shadow-md relative z-10 animate-fade-in"
+                />
+              </div>
+              <div className="space-y-2 text-center sm:text-left">
+                <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium italic">
+                  {lang === "en" 
+                    ? "“At American, we believe fluency in English is not a measure of intelligence, but a powerful skill that unlocks global opportunities. Our doors are open for everyone.”"
+                    : "“अमेरिकन अकादमी में हमारा मानना है कि अंग्रेजी में प्रवाह बुद्धिमत्ता की माप नहीं है, बल्कि एक शक्तिशाली कौशल है जो वैश्विक अवसरों को खोलता है। हमारे दरवाजे सभी के लिए खुले हैं।”"
+                  }
+                </p>
+                <div>
+                  <h4 className="text-xs font-bold text-rose-900">
+                    — {lang === "en" ? "Shamim Sir" : "शमीम सर"}
+                  </h4>
+                  <p className="text-[10px] text-slate-500">
+                    {lang === "en" ? "Founder & Chief Mentor, American Academy" : "संस्थापक एवं मुख्य मार्गदर्शक, अमेरिकन अकादमी"}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
