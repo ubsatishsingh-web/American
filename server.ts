@@ -508,9 +508,10 @@ async function startServer() {
         }
 
         if (html) {
-          // Dynamically replace the hardcoded applet URLs with the current request origin/host
+          // Dynamically replace the hardcoded custom domain or preview URLs with the current request origin/host
           const dynamicHtml = html
-            .replace(/https:\/\/ais-pre-siwt3m5hzmsg2oz4hzv4pn-478417890916\.asia-east1\.run\.app/g, origin);
+            .replace(/https:\/\/ais-pre-siwt3m5hzmsg2oz4hzv4pn-478417890916\.asia-east1\.run\.app/g, origin)
+            .replace(/https:\/\/shamimsir\.kosieducationtimes\.com/g, origin);
           res.setHeader("Content-Type", "text/html");
           return res.send(dynamicHtml);
         }
