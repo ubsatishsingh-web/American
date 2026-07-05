@@ -329,6 +329,27 @@ function writeLocalEnquiries(enquiries: Enquiry[]): void {
 // Cached OG Image Buffer
 let cachedOgImage: Buffer | null = null;
 
+// Pre-cache OG Image on startup so it serves instantly for crawlers like WhatsApp
+async function preCacheOgImage() {
+  try {
+    const targetUrl = "https://lh3.googleusercontent.com/d/1CrJCHumLRHFHLmTStpS8zmyWswXL3aTs=s600";
+    console.log(`Pre-caching dynamic OG Image from: ${targetUrl}`);
+    const res = await fetch(targetUrl);
+    if (res.ok) {
+      const arrayBuffer = await res.arrayBuffer();
+      cachedOgImage = Buffer.from(arrayBuffer);
+      console.log(`Dynamic OG Image pre-cached successfully! Size: ${Math.round(cachedOgImage.length / 1024)} KB`);
+    } else {
+      console.warn(`Failed to pre-cache OG Image: HTTP status ${res.status}`);
+    }
+  } catch (err) {
+    console.error("Error pre-caching OG Image on startup:", err);
+  }
+}
+
+// Trigger pre-caching immediately
+preCacheOgImage();
+
 // Dynamically proxy the OG image to ensure it is highly compressed and fully compatible with WhatsApp/crawlers
 app.get("/og-image.jpg", async (req, res) => {
   try {
@@ -469,7 +490,33 @@ async function startServer() {
     console.log("Starting in PRODUCTION mode serving static bundle");
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
+    
+    let cachedIndexHtml: string | null = null;
     app.get("*", (req, res) => {
+      try {
+        const protocol = req.headers["x-forwarded-proto"] || req.protocol || "https";
+        const host = req.headers["x-forwarded-host"] || req.headers.host;
+        const origin = `${protocol}://${host}`;
+
+        let html = cachedIndexHtml;
+        if (!html) {
+          const indexPath = path.join(distPath, "index.html");
+          if (fs.existsSync(indexPath)) {
+            html = fs.readFileSync(indexPath, "utf-8");
+            cachedIndexHtml = html;
+          }
+        }
+
+        if (html) {
+          // Dynamically replace the hardcoded applet URLs with the current request origin/host
+          const dynamicHtml = html
+            .replace(/https:\/\/ais-pre-siwt3m5hzmsg2oz4hzv4pn-478417890916\.asia-east1\.run\.app/g, origin);
+          res.setHeader("Content-Type", "text/html");
+          return res.send(dynamicHtml);
+        }
+      } catch (err) {
+        console.error("Error serving dynamic index.html:", err);
+      }
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
