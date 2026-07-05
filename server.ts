@@ -326,6 +326,45 @@ function writeLocalEnquiries(enquiries: Enquiry[]): void {
 // API Endpoints
 // -------------------------------------------------------------
 
+// Cached OG Image Buffer
+let cachedOgImage: Buffer | null = null;
+
+// Dynamically proxy the OG image to ensure it is highly compressed and fully compatible with WhatsApp/crawlers
+app.get("/og-image.jpg", async (req, res) => {
+  try {
+    if (cachedOgImage) {
+      res.setHeader("Content-Type", "image/jpeg");
+      res.setHeader("Cache-Control", "public, max-age=86400");
+      return res.send(cachedOgImage);
+    }
+
+    // Use s600 parameter to tell Google to automatically compress/resize the image to max 600px
+    // This reduces the image file size to ~50KB, ensuring it's well below WhatsApp's strict 300KB limit!
+    const targetUrl = "https://lh3.googleusercontent.com/d/1CrJCHumLRHFHLmTStpS8zmyWswXL3aTs=s600";
+    console.log(`Dynamic OG Image: Fetching resized image from ${targetUrl}`);
+    
+    let response = await fetch(targetUrl);
+    if (!response.ok) {
+      // Fallback to un-resized drive URL if resized parameter fails
+      console.warn("Resized fetch failed, falling back to original drive URL");
+      response = await fetch("https://lh3.googleusercontent.com/d/1CrJCHumLRHFHLmTStpS8zmyWswXL3aTs");
+    }
+
+    if (response.ok) {
+      const arrayBuffer = await response.arrayBuffer();
+      cachedOgImage = Buffer.from(arrayBuffer);
+      res.setHeader("Content-Type", "image/jpeg");
+      res.setHeader("Cache-Control", "public, max-age=86400");
+      return res.send(cachedOgImage);
+    } else {
+      throw new Error(`Drive responded with status ${response.status}`);
+    }
+  } catch (err) {
+    console.error("Failed to dynamically fetch and stream OG Image:", err);
+    return res.status(500).send("Error generating preview image");
+  }
+});
+
 // Fetch live combined data (sheet + config status)
 app.get("/api/data", async (req, res) => {
   const data = await getLiveSheetData();
