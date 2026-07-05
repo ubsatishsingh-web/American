@@ -57,10 +57,18 @@ export interface Enquiry {
   message: string;
 }
 
+export interface Video {
+  video_url: string;
+  title: string;
+  description: string;
+  featured: string;
+}
+
 export interface SheetData {
   businessInfo: BusinessInfo;
   courses: Course[];
   testimonials: Testimonial[];
   gallery: GalleryItem[];
   faqs: FAQ[];
+  videos: Video[];
 }

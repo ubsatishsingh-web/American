@@ -10,6 +10,7 @@ import About from "./components/About";
 import Courses from "./components/Courses";
 import Testimonials from "./components/Testimonials";
 import Gallery from "./components/Gallery";
+import Videos from "./components/Videos";
 import FAQs from "./components/FAQs";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
@@ -178,6 +179,7 @@ export default function App() {
         <Courses courses={data.courses} lang={lang} onSelectCourse={handleSelectCourse} />
         <Testimonials testimonials={data.testimonials} lang={lang} />
         <Gallery gallery={data.gallery} lang={lang} />
+        <Videos videos={data.videos} lang={lang} />
         <FAQs faqs={data.faqs} lang={lang} />
         <Contact 
           businessInfo={info} 

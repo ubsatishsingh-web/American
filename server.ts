@@ -62,7 +62,7 @@ async function getLiveSheetData(): Promise<SheetData> {
     console.log(`Fetching data from live Google Sheet ID: ${sheetId}`);
     
     // Define tabs to fetch
-    const tabs = ["Business_Info", "Courses", "Testimonials", "Gallery", "FAQs"];
+    const tabs = ["Business_Info", "Courses", "Testimonials", "Gallery", "FAQs", "Videos"];
     const results: any = {};
     
     await Promise.all(
@@ -158,6 +158,18 @@ async function getLiveSheetData(): Promise<SheetData> {
         answer: row.answer || "",
         answer_hindi: row.answer_hindi || ""
       })).filter((f) => f.question && f.answer);
+    }
+
+    // 6. Process Videos
+    if (results["Videos"] && results["Videos"].length > 0) {
+      data.videos = results["Videos"].map((row: any) => ({
+        video_url: row.video_url || row.url || "",
+        title: row.title || "",
+        description: row.description || "",
+        featured: row.featured ? String(row.featured).trim().toLowerCase() : "no"
+      })).filter((v) => v.video_url);
+    } else {
+      data.videos = fallbackData.videos || [];
     }
 
     return data;

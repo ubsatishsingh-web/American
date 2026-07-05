@@ -5,8 +5,8 @@ export const fallbackData: SheetData = {
     name: "American by Shamim Sir",
     tagline: "Pioneer in Spoken English & Personality Development",
     tagline_hindi: "स्पोकन इंग्लिश और व्यक्तित्व विकास का सबसे भरोसेमंद संस्थान",
-    phone: "+91 99342 16785",
-    whatsapp: "919934216785",
+    phone: "+91 82074 77443",
+    whatsapp: "918207477443",
     email: "americanpurnia@gmail.com",
     address: "American Academy, Near Bhatta Bazar, Opposite Kali Mandir Road, Purnia, Bihar 854301",
     about_short: "American by Shamim sir is the Kosi belt's premier academy for spoken English, communication skills, and personality grooming. Founded to bridge the rural-urban confidence gap, we have transformed over 10,000+ students from Purnia and surrounding districts.",
@@ -151,6 +151,32 @@ export const fallbackData: SheetData = {
       question_hindi: "क्या व्यक्तित्व विकास के लिए अलग से कक्षाएं होती हैं?",
       answer: "Personality development, body language training, and public speaking drills are fully integrated into all our courses, as we believe fluency is incomplete without overall confidence and grooming.",
       answer_hindi: "व्यक्तित्व विकास, बॉडी लैंग्वेज ट्रेनिंग और पब्लिक स्पीकिंग अभ्यास हमारे सभी पाठ्यक्रमों में पूरी तरह से एकीकृत हैं, क्योंकि हमारा मानना है कि आत्मविश्वास और ग्रूमिंग के बिना बोलना अधूरा है।"
+    }
+  ],
+  videos: [
+    {
+      video_url: "https://www.youtube.com/watch?v=sMreS858U7c",
+      title: "How to Speak English Fluently - 5 Simple Rules | By Shamim Sir",
+      description: "Discover the secret rules to speak fluent English without translation or hesitation. Perfect for beginners and Hindi medium students.",
+      featured: "yes"
+    },
+    {
+      video_url: "https://www.youtube.com/watch?v=b-8A_Yv9C-I",
+      title: "Stage Fear Kaise Door Karein? Public Speaking Confidence Rules",
+      description: "Shamim Sir explains how to eliminate stage fear and speak with absolute confidence in front of hundreds of people.",
+      featured: "no"
+    },
+    {
+      video_url: "https://www.youtube.com/watch?v=S0Tae_fE8C4",
+      title: "Basic English Grammar Drill - Direct Speaking Method",
+      description: "Learn the essential grammar structures needed for everyday conversation. No boring rules, only active speaking practice.",
+      featured: "no"
+    },
+    {
+      video_url: "https://www.youtube.com/watch?v=e_04ZrN-N_g",
+      title: "Cracking Corporate Interviews - Body Language & Greeting Tips",
+      description: "In this session, Shamim Sir demonstrates the correct posture, handshake, greeting etiquette, and confidence tricks for interviews.",
+      featured: "no"
     }
   ]
 };

@@ -10,7 +10,7 @@ export default function Footer({ businessInfo, lang }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-slate-900 border-t border-slate-800 text-slate-400 py-12">
+    <footer className="bg-slate-900 border-t border-slate-800 text-slate-400 pt-12 pb-28 md:pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Info Grid */}
@@ -72,27 +72,35 @@ export default function Footer({ businessInfo, lang }: FooterProps) {
         </div>
 
         {/* Bottom Credits & Copyright */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs">
           
           {/* Copyright notice */}
-          <div>
+          <div className="flex flex-col items-center sm:items-start space-y-1">
             <p className="text-slate-500 text-center sm:text-left">
-              &copy; {currentYear} {businessInfo.name}. {lang === "en" ? "All Rights Reserved." : "सर्वाधिकार सुरक्षित।"}
+              &copy; {currentYear} {businessInfo.name}.
+            </p>
+            <p className="text-[11px] text-slate-600 text-center sm:text-left">
+              {lang === "en" ? "All Rights Reserved." : "सर्वाधिकार सुरक्षित।"}
             </p>
           </div>
 
-          {/* Mandatory Zera Tech credit */}
-          <div className="flex items-center space-x-1.5 text-slate-500 font-medium">
-            <span>Website by</span>
-            <a 
-              href="https://www.zeratech.io" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-amber-500 hover:text-amber-400 font-bold underline flex items-center space-x-1"
-            >
-              <span>Zera Technologies</span>
-            </a>
-            <Heart className="w-3.5 h-3.5 text-rose-700 fill-current animate-pulse" />
+          {/* Mandatory, Prominent and Highly Dominant Zera Tech credit banner */}
+          <div className="flex flex-col items-center sm:items-end space-y-2">
+            <div className="bg-slate-800/80 hover:bg-slate-800/100 px-5 py-2.5 rounded-2xl border border-slate-700/60 flex items-center space-x-2 text-xs shadow-lg transition-all duration-200">
+              <span className="text-slate-300 font-medium">Website designed & developed by:</span>
+              <a 
+                href="https://www.zeratech.io" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-amber-500 hover:text-amber-400 font-extrabold tracking-wide hover:underline flex items-center space-x-1 transition-all duration-200"
+              >
+                <span>Zera Technologies</span>
+              </a>
+              <Heart className="w-3.5 h-3.5 text-rose-500 fill-current animate-pulse" />
+            </div>
+            <p className="text-[10px] text-slate-500 italic text-center sm:text-right">
+              {lang === "en" ? "Empowering Bihar's local businesses digitally." : "बिहार के स्थानीय व्यवसायों को डिजिटल रूप से सशक्त बनाना।"}
+            </p>
           </div>
 
         </div>
