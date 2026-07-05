@@ -11,9 +11,42 @@ interface VideosProps {
 // Extract YouTube ID helper
 function getYouTubeId(url: string): string | null {
   if (!url) return null;
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  const match = url.match(regExp);
-  return match && match[2].length === 11 ? match[2] : null;
+  try {
+    const trimmed = url.trim();
+    // Handle youtu.be short URLs
+    if (trimmed.includes("youtu.be/")) {
+      const parts = trimmed.split("youtu.be/");
+      if (parts[1]) {
+        const id = parts[1].split(/[?#&]/)[0];
+        if (id.length === 11) return id;
+      }
+    }
+    // Handle standard watch?v= URLs
+    if (trimmed.includes("v=")) {
+      const parts = trimmed.split("v=");
+      if (parts[1]) {
+        const id = parts[1].split(/[?#&]/)[0];
+        if (id.length === 11) return id;
+      }
+    }
+    // Handle embeds, shorts or other paths (e.g. youtube.com/embed/XYZ or youtube.com/shorts/XYZ)
+    const paths = ["/embed/", "/shorts/", "/v/"];
+    for (const path of paths) {
+      if (trimmed.includes(path)) {
+        const parts = trimmed.split(path);
+        if (parts[1]) {
+          const id = parts[1].split(/[?#&]/)[0];
+          if (id.length === 11) return id;
+        }
+      }
+    }
+    // Fallback regex
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = trimmed.match(regExp);
+    return match && match[2].length === 11 ? match[2] : null;
+  } catch (e) {
+    return null;
+  }
 }
 
 export default function Videos({ videos = [], lang }: VideosProps) {
@@ -129,10 +162,17 @@ export default function Videos({ videos = [], lang }: VideosProps) {
                 >
                   {/* YouTube Thumbnail (Lazy-loaded) */}
                   <img
-                    src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+                    src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
                     alt={video.title}
                     loading="lazy"
+                    referrerPolicy="no-referrer"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      if (img.src.includes("i.ytimg.com")) {
+                        img.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                      }
+                    }}
                   />
 
                   {/* Play Overlay */}
