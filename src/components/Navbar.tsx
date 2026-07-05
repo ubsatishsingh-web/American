@@ -16,7 +16,6 @@ export default function Navbar({ businessInfo, lang, setLang, onAdminClick }: Na
   const menuItems = [
     { label: lang === "en" ? "About" : "परिचय", href: "#about" },
     { label: lang === "en" ? "Courses" : "कोर्स", href: "#courses" },
-    { label: lang === "en" ? "Videos" : "वीडियो क्लासेस", href: "#videos" },
     { label: lang === "en" ? "Gallery" : "गैलरी", href: "#gallery" },
     { label: lang === "en" ? "FAQs" : "सवाल-जवाब", href: "#faqs" },
     { label: lang === "en" ? "Contact" : "संपर्क", href: "#contact" },
